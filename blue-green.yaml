@@ -4,7 +4,7 @@ metadata:
   name: webcolor-active
 spec:
   selector:
-      app: webcolor
+    app: webcolor
   ports:
   - port: 80
     targetPort: 80
@@ -16,7 +16,7 @@ metadata:
   name: webcolor-preview
 spec:
   selector:
-      app: webcolor
+    app: webcolor
   ports:
   - port: 80
     targetPort: 80
@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
       - name: webcolor
-        image: iadocicco/web-color:green
+        image: iadocicco/web-color:blue
         ports:
           - containerPort: 80
   minReadySeconds: 30
@@ -46,7 +46,7 @@ spec:
     blueGreen:
       activeService: webcolor-active
       previewService: webcolor-preview
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
       autoPromotionSeconds: 30
       scaleDownDelaySeconds: 60
     
