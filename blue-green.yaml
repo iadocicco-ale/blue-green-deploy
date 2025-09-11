@@ -1,54 +1,20 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: webcolor-active
-spec:
-  selector:
-    app: webcolor
-  ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 31700
-  type: NodePort
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webcolor-preview
-spec:
-  selector:
-    app: webcolor
-  ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 31800
-  type: NodePort
----
 apiVersion: argoproj.io/v1alpha1
-kind: Rollout
+kind: Application
 metadata:
-  name: webcolor
+  name: webcolor-blue-green
+  namespace: argocd
 spec:
-  replicas: 4
-  selector:
-    matchLabels:
-      app: webcolor
-  template:
-    metadata:
-      labels:
-        app: webcolor
-    spec:
-      containers:
-      - name: webcolor
-        image: iadocicco/web-color:green
-        ports:
-          - containerPort: 80
-  minReadySeconds: 20
-  strategy:
-    blueGreen:
-      activeService: webcolor-active
-      previewService: webcolor-preview
-      autoPromotionEnabled: false
-      autoPromotionSeconds: 20
-      scaleDownDelaySeconds: 30
-    
+  project: default
+  source:
+    repoURL: https://github.com/iadocicco-ale/web-color-deploy.git
+    targetRevision: HEAD
+    path: blue-green
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: webcolor
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
